@@ -41,17 +41,18 @@ void menu() {
     string nombre,ap, codigo, dni;
     do {
         cout << "\t...:::|MINI MARKET|:::...\n\n"<< endl;
-        cout << "\t--------------MENU--------------\n" <<endl;
-        cout << "1. Registrar nuevo Cliente" << endl;
-        cout << "2. Mostrar codigos de los Cliente" << endl;
-        cout << "3. Buscar Clientes (Recursiva)" << endl;
+        cout << "\t############## MENU ##############\n" <<endl;
+        cout << "\t1. Registrar nuevo Cliente" << endl;
+        cout << "\t2. Mostrar codigos de los Cliente" << endl;
+        cout << "\t3. Buscar Clientes " << endl;
         //cout << "4. Buscar un elemento en los registros (Iterativa)" << endl;
-        cout << "5. Recorrer en PreOrden" << endl;
-        cout << "6. Recorrer en InOrden" << endl;
-        cout << "7. Recorrer en PostOrden" << endl;
-        cout << "8. Eliminar un Cliente" << endl;
-        cout << "9. Salir" << endl;
-        cout << "\nIngrese opción: ";
+        cout << "\t5. Recorrer en PreOrden" << endl;
+        cout << "\t6. Recorrer en InOrden" << endl;
+        cout << "\t7. Recorrer en PostOrden" << endl;
+        cout << "\t8. Eliminar un Cliente" << endl;
+        cout << "\t9. Salir" << endl;
+        cout << "\t##################################\n" <<endl;
+        cout << "\nIngrese Opcion: ";
         cin >> opcion;
 
 
@@ -83,15 +84,17 @@ void menu() {
 
 
             case 3:
-                cout << "\n...:::|Ingrese el DNI del Cliente que desea buscar|:::... ";
+                cout << "\n..:::|Ingrese el DNI del Cliente que desea buscar|:::.. ";
                 cin >> dato;
                 if (busqueda(arbol, dato) == true) {
                     cout << "\nEl DNI " << dato << " a sido encontrado en los registros\n";
                     cout << "\nPertenece a: \n";
-                    cout << "NOMBRE: " << bus->nombre << endl;
-                    cout << "APELLIDO: " << bus->apellido << endl;
-                    cout << "EDAD: " << bus->edad << endl;
-                    cout << "DNI: " << bus->DNI << endl;
+                    cout << "\t##################################\n" <<endl;
+                    cout << "\tNOMBRE.......: " << bus->nombre << endl;
+                    cout << "\tAPELLIDO.....: " << bus->apellido << endl;
+                    cout << "\tDNI..........: " << bus->edad << endl;
+                    cout << "\tEDAD.........: " << bus->DNI << endl;
+                    cout << "\t##################################\n" <<endl;
                 }
                 else {
                     cout << "\nElemento no encontrado\n";
@@ -108,8 +111,8 @@ void menu() {
                     cout << "\nPertenece a: \n";
                     cout << "NOMBRE: " << bus->nombre << endl;
                     cout << "APELLIDO: " << bus->apellido << endl;
-                    cout << "EDAD: " << bus->edad << endl;
-                    cout << "DNI: " << bus->DNI << endl;
+                    cout << "DNI: " << bus->edad << endl;
+                    cout << "EDAD: " << bus->DNI << endl;
                 }
                 else {
                     cout << "\nElemento no encontrado\n";
