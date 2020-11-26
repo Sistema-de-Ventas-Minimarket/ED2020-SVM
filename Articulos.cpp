@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <ctime>
 #include <fstream>
+#include <afxres.h>
 
 using namespace std;
 
@@ -47,6 +48,8 @@ void buscar(TItem lista, char codigo[]);
 void eliminar(TItem lista, char codigo[]);
 
 void login(string username, string password);
+
+void banners();
 
 void menu();
 
@@ -302,10 +305,11 @@ void login(string username, string password) {
     if (entry == true) {
 
         system("Color 0B");
-        cout << "\t\nBIENVENIDO AL SISTEMA DE VENTA 'ED2020-SVM' ";
+        cout<<"\t\t",banners();
         menu();
     } else {
         cout << "\tHa sobrepasado el numero permitido de intentos ";
+        exit(1);
     }
 }
 
@@ -314,6 +318,14 @@ int ramdonCode(){
         int valor = 0;
         valor = rand() % (99999 - 11111) + 11111;
     return valor;
+}
+
+void banners(){
+    string banner = "B I E N V E N I D O  A L  S I S T E M A  D E  V E N T A  'ED2020-SVM' ";
+    for (int j = 0; j < banner.length(); ++j) {
+        cout<<banner[j];
+        Sleep(80);
+    }
 }
 
 void messageError(int n){
@@ -337,12 +349,11 @@ void optionItems() {
     string g = "401";  //401-xxxxx->licores & gaseosas
     string d = "501";  //501-xxxxx->dulces
 
-    //do {
         cout << "\nG E N E R A N D O | C O D I G O";
         cout << "";
         cout << "\n\t1 - L I M P I E Z A";
         cout << "\n\t2 - A L I M E N T O S";
-        cout << "\n\t3 - L I C O R E S & G A S E O S A S";
+        cout << "\n\t3 - L I C O R E S  &  G A S E O S A S";
         cout << "\n\t4 - D U L C E S";
         cout << "\nSeleccione opcion [~]: ";
         cin >> opcion;
@@ -366,7 +377,6 @@ void optionItems() {
                 cout << "\n\nOpcion no valida !!!";
                 getch();
         }
-    //} while (opc);
 
 }
 
@@ -413,7 +423,7 @@ void menu() {
 
                     cout << "\n\t1 - L I M P I E Z A";
                     cout << "\n\t2 - A L I M E N T O S";
-                    cout << "\n\t3 - L I C O R E S & G A S E O S A S";
+                    cout << "\n\t3 - L I C O R E S  &  G A S E O S A S";
                     cout << "\n\t4 - D U L C E S";
                     cout << "\nSeleccione opcion [~]: ";
                     cin >> opcion;
@@ -463,7 +473,7 @@ void menu() {
                 liberar(&listarItem);
                 break;
             case 4:
-                cout << "\nIngrese el codigo para eleminar el Producto : ";
+                cout << "\nIngrese el codigo para eliminar el Producto : ";
                 cin >> codigo;
                 eliminar(listarItem, codigo);
                 break;
