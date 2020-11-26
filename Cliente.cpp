@@ -1,6 +1,3 @@
-//
-// Created by h4ns3L on 25/11/2020.
-//
 #include <iostream>
 #include <string>
 
@@ -43,18 +40,18 @@ void menu() {
     int dato, opcion, contador = 0;
     string nombre,ap, codigo, dni;
     do {
-        cout << "\t\t\t|MINI MARKET|\n\n"<< endl;
+        cout << "\t...:::|MINI MARKET|:::...\n\n"<< endl;
         cout << "\t--------------MENU--------------\n" <<endl;
         cout << "1. Registrar nuevo Cliente" << endl;
         cout << "2. Mostrar codigos de los Cliente" << endl;
-        cout << "3. Buscar un Cliente" << endl;
-        //cout << "4. Buscar un elemento en los registros " << endl;
-        //	cout << "5. Recorrer en PreOrden" << endl;
-        //	cout << "6. Recorrer en InOrden" << endl;
-        //	cout << "7. Recorrer en PostOrden" << endl;
+        cout << "3. Buscar Clientes (Recursiva)" << endl;
+        //cout << "4. Buscar un elemento en los registros (Iterativa)" << endl;
+        cout << "5. Recorrer en PreOrden" << endl;
+        cout << "6. Recorrer en InOrden" << endl;
+        cout << "7. Recorrer en PostOrden" << endl;
         cout << "8. Eliminar un Cliente" << endl;
         cout << "9. Salir" << endl;
-        cout << "\nIngrese opcion: ";
+        cout << "\nIngrese opción: ";
         cin >> opcion;
 
 
@@ -65,10 +62,14 @@ void menu() {
                 cin >> nombre;
                 cout << "\nIngrese Apellido: ";
                 cin >> ap;
+
+
                 cout << "\nIngrese Edad: ";
-                cin >> dato;
-                cout << "\nIngrese DNI: ";
                 cin >> dni;
+
+                cout << "\nIngrese DNI: ";
+                cin >> dato;
+
                 insertarNodo(arbol, dato, nombre,ap, dni, NULL);
                 cout << "\n";
                 system("pause");
@@ -82,10 +83,10 @@ void menu() {
 
 
             case 3:
-                cout << "\n...:::|Ingrese edad del Cliente que desea buscar|:::... ";
+                cout << "\n...:::|Ingrese el DNI del Cliente que desea buscar|:::... ";
                 cin >> dato;
                 if (busqueda(arbol, dato) == true) {
-                    cout << "\nLa edad" << dato << " a sido encontrado en los registros\n";
+                    cout << "\nEl DNI " << dato << " a sido encontrado en los registros\n";
                     cout << "\nPertenece a: \n";
                     cout << "NOMBRE: " << bus->nombre << endl;
                     cout << "APELLIDO: " << bus->apellido << endl;
@@ -100,7 +101,7 @@ void menu() {
                 break;
 
             case 4:
-                cout << "\n...:::|Ingrese edad del Cliente que desea buscar|:::... ";
+                cout << "\n...:::|Ingrese el DNI del Cliente que desea buscar|:::... ";
                 cin >> dato;
                 if (busquedaiterativa(arbol, dato) == 1) {
                     cout << "\nLa edad" << dato << " a sido encontrado en los registros\n";
@@ -139,7 +140,7 @@ void menu() {
                 break;
 
 
-            case 8: cout << "\n...:::|Ingrese edad del Cliente que desea eliminar del registro|:::...\n\n";
+            case 8: cout << "\n...:::|Ingrese el DNI del Cliente que desea eliminar del registro|:::...\n\n";
                 cin >> dato;
                 eliminar(arbol, dato);
                 cout << "\n";
