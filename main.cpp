@@ -15,8 +15,8 @@
 
 using namespace std;
 
-#define USER ""
-#define PASS ""
+#define USER "admin"
+#define PASS "admin"
 
 struct Nodo {
     string nombre;
@@ -32,19 +32,17 @@ Nodo *arbol = NULL;
 Nodo *bus = NULL;
 
 struct Item {
-    char codeItem[20];
+    int codeItem;
     char nameItem[20];
-    //int priceItem;
-    char priceItem[20];
-    //int qualityItem;
-    char qualityItem[20];
+    int priceItem;
+    int qualityItem;
     Item *sgte;
-} *a, *i;
+} *a, *i, *p;
 
 char nombre[20];
-char codigo[20];
-char precio[20];
-char cantArticulo[20];
+int codigo;
+int precio;
+int cantArticulo;
 
 
 typedef struct Item *TItem;
@@ -55,21 +53,29 @@ void menuMain();
 
 /*----*/
 
-void insertarArticulo(TItem &lista, char codigo[], char nombre[], char precio[], char cantArticulo[]);
+void insertarArticulo(TItem &lista, int codigo, char nombre[], int precio, int cantArticulo);
 
 void imprimirMemory(TItem lista);
 
 void cargarArticulo();
 
-void buscar(TItem lista, char codigo[]);
+//void buscar(TItem lista, char codigo[]);
+
+int buscar(int codigo);
 
 void eliminar(TItem lista, char codigo[]);
+
+void borrar(int codigo);
 
 void login(string username, string password);
 
 void banners();
 
 void menuItems();
+
+void gotoxy(int x,int y);
+
+COORD coord={0,0};
 
 /*-----*/
 void menuCustomers();
@@ -110,94 +116,58 @@ int main() {
     return 0;
 }
 
-void insertarBinario(TItem &lista, char codigo[], char nombre[], char precio[], char cantidad[]) {
 
-    TItem nuevo = new(struct Item);
-    strcpy(nuevo->codeItem, codigo);
-    strcpy(nuevo->nameItem, nombre);
-    strcpy(nuevo->priceItem, precio);
-    strcpy(nuevo->qualityItem, cantidad);
-    nuevo->sgte = lista;
-    lista = nuevo;
+void insertarArticulo(TItem &lista, int codigo, char nombre[], int precio, int cantidad) {
 
-    FILE *fichero;
-    //TItem it; //variable dato
+    ofstream outArticulo;
+    ifstream consultaArticulo;
+    bool repetido = false;
+    Item item;  //creando objeto de estructura
+    consultaArticulo.open("Items.txt", ios::in);
+    outArticulo.open("Items.txt", ios::out | ios::app);  //abriendo archivo
 
-    if ((fichero = fopen("Items.dat", "ab")) == NULL) {
-        cout << "Fichero no encontrado" << endl;
-    } else {
-        // obtenemos datos
-        fwrite(&nuevo, sizeof(nuevo), 1, fichero);
-        fclose(fichero);
-    }
-}
+    if (outArticulo.is_open() && consultaArticulo.is_open()) {
 
-void insertarArticulo(TItem &lista, char codigo[], char nombre[], char precio[], char cantidad[]) {
+        consultaArticulo >> item.codeItem;
 
-    ofstream outArticulo("Items.txt");
+        //verificando que no exista un rgistro con el codigo
+//        while (!consultaArticulo.eof())
+//        {
+//            consultaArticulo >> item.nameItem >> item.priceItem >> item.qualityItem;
+//
+//            if (item.codeItem == codigo) {
+//                cout << "Ya existe un producto con el codigo " << codigo << endl;
+//                system("pause");
+//            }
+//            consultaArticulo >> item.codeItem;
+//        }
+        if (repetido == false) {
 
-    if (outArticulo.is_open()) {
-        TItem nuevo = new(struct Item);
-        outArticulo << strcpy(nuevo->codeItem, codigo) << " " << strcpy(nuevo->nameItem, nombre) << " "
-                    << strcpy(nuevo->priceItem, precio) << " " << strcpy(nuevo->qualityItem, cantidad);
-        nuevo->sgte = lista;
-        lista = nuevo;
-        outArticulo.close();
+            TItem nuevo = new(struct Item);
+            outArticulo << (nuevo->codeItem, codigo) << " " << strcpy(nuevo->nameItem, nombre) << " "
+                        << (nuevo->priceItem, precio) << " " << (nuevo->qualityItem, cantidad) << endl;
+            nuevo->sgte = lista;
+            lista = nuevo;
+
+            //outArticulo << codigo << " " << item.nameItem << " " << item.priceItem << " " << item.qualityItem << endl;
+
+            system("cls");
+        }
     } else {
         cout << "No es posible abrir el archivo";
     }
+    outArticulo.close();
+    consultaArticulo.close();
+    system("pause");
 }
 
-void cargarFile() {
-
-    FILE *fichero;
-    DATO e;         //variable dato
-    //abriendo archivo
-    //if ((fichero = fopen("Items", "rb")) == NULL) {
-    fichero = fopen("Items.dat", "r+b");
-    // printf("\n Items no existe");
-    //} else {
-    //leyendo el primer caracter
-    fread(&e, sizeof(DATO), 1, fichero);
-    while (!feof(fichero)) {
-        printf("\n________________________");
-        /*cout << "Codigo Articulo. " << e->codeItem << endl;
-        cout << "Nombre Articulo. " << e->nameItem << endl;
-        cout << "Precio Articulo. " << e->priceItem << endl;
-        cout << "Cantidad Articulo. " << e->qualityItem << endl;
-        cout << "----------------------------- " << endl;*/
-        printf("\nCodigo Articulo.________________________%s", e.codeItem);
-        printf("\nNombre Articulo.________________________%s", e.nameItem);
-        printf("\nPrecio Articulo.________________________%s", e.priceItem);
-        printf("\nCantidad Articulo.______________________%s", e.qualityItem);
-        printf("\n________________________");
-        //leo el sgte caracter
-        fread(&e, sizeof(e), 1, fichero);
-        //e = e.sgte;
-        //e.sgte;
-    }
-    // }
-    //cerramos archivo
-    fclose(fichero);
-
-    /* while (tmp) {
-         cout << "Codigo Articulo. " << tmp->codeItem << endl;
-         cout << "Nombre Articulo. " << tmp->nameItem << endl;
-         cout << "Precio Articulo. " << tmp->priceItem << endl;
-         cout << "Cantidad Articulo. " << tmp->qualityItem << endl;
-         cout << "----------------------------- " << endl;
-         tmp = tmp->sgte;
-     }*/
-}
-
-//outArticulo <<"Cod.Articulo "<<"Nom.Articulo "<<"Prec.Articulo "<<"Cant.Articulo"<<endl;
 void cargarArticulo() {
     DATO e;
     string line;
     ifstream myArticulo("Items.txt");
     if (myArticulo.is_open()) {
         cout << "\t\t   ----------------------------------------------------------------------------" << endl;
-        cout << "   " << setw(30) << "| Cod.Articulo";
+        cout << "   " << setw(25) << "| Cod.Articulo";
         cout << setw(26) << "| Nom.Articulo";
         cout << setw(20) << "| Prec.Articulo";
         cout << setw(15) << "| Cant.Articulo" << endl;
@@ -209,7 +179,7 @@ void cargarArticulo() {
             myArticulo >> e.nameItem;
             myArticulo >> e.priceItem;
             myArticulo >> e.qualityItem;
-            cout << "   " << setw(30) << e.codeItem << setw(26) << e.nameItem << setw(20) << e.priceItem << setw(15)
+            cout << "   " << setw(30) << e.codeItem << setw(26) << e.nameItem << setw(15) << e.priceItem << setw(15)
                  << e.qualityItem << endl;
         }
         myArticulo.close();
@@ -226,40 +196,68 @@ void imprimirMemory(TItem lista) {
 
     while (tmp) {
         printf("\n________________________");
-        printf("\nCodigo Articulo.________________________%s", tmp->codeItem);
+        printf("\nCodigo Articulo.________________________%d", tmp->codeItem);
         printf("\nNombre Articulo.________________________%s", tmp->nameItem);
-        printf("\nPrecio Articulo.________________________%s", tmp->priceItem);
-        printf("\nCantidad Articulo.______________________%s", tmp->qualityItem);
+        printf("\nPrecio Articulo.________________________%d", tmp->priceItem);
+        printf("\nCantidad Articulo.______________________%d", tmp->qualityItem);
         printf("\n________________________");
 
         tmp = tmp->sgte;
     }
 
-    /* while (tmp) {
-         cout << "Codigo Articulo. " << tmp->codeItem << endl;
-         cout << "Nombre Articulo. " << tmp->nameItem << endl;
-         cout << "Precio Articulo. " << tmp->priceItem << endl;
-         cout << "Cantidad Articulo. " << tmp->qualityItem << endl;
-         cout << "----------------------------- " << endl;
-         tmp = tmp->sgte;
-     }*/
 }
 
-void buscar(TItem lista, char codigo[]) {
-    TItem tmp = lista;
-    while (tmp) {
-        if (!strcmp(tmp->codeItem, codigo));
-        cout << "Nro°  Cod. " << tmp->codeItem << endl;
-        cout << "Nombre Del Producto : " << tmp->nameItem << endl;
-        cout << "Precio Del Producto : " << tmp->priceItem << endl;
-        cout << "Stock Del Producto : " << tmp->qualityItem << endl;
+int buscar(int codigo) {
+    Item item;
+    ifstream lectura;
+    bool encontrado = false;
+    lectura.open("Items.txt", ios::out | ios::in);
 
-        tmp = tmp->sgte;
-        break;
+    if (lectura.is_open()) {
+        lectura >> item.codeItem;
+        while (!lectura.eof()) {
+            lectura >> item.nameItem >> item.priceItem >> item.qualityItem;
+
+            if (codigo == item.codeItem) {
+                encontrado = true;
+
+                cout << "\t\t   ----------------------------------------------------------------------------" << endl;
+                cout << "   " << setw(25) << "| Cod.Articulo";
+                cout << setw(26) << "| Nom.Articulo";
+                cout << setw(20) << "| Prec.Articulo";
+                cout << setw(15) << "| Cant.Articulo" << endl;
+
+                cout << "   " << setw(30) << item.codeItem << setw(26) << item.nameItem << setw(15) << item.priceItem
+                     << setw(15)
+                     << item.qualityItem << endl;
+            }
+            lectura >> item.codeItem;
+        }
+        if (!encontrado) {
+            cout << "Producto no encontado" << endl;
+            getch();
+            return (0);
+        }
+    } else {
+        cout << "No se pudo abrir el archivo" << endl;
     }
-    if (tmp == NULL) {
-        cout << "No se encontro el Producto " << codigo << endl;
+    system("pause");
+    return 1;
+}
+
+int buscarItem(int codigo) {
+    if (!codigo) {
+        cout << "No hay datos en la lista!!!";
+        getch();
+        return (0);
     }
+    p = i;
+    a = NULL;
+    while (p->sgte && p->codeItem < codigo) {
+        a = p;
+        p = p->sgte;
+    }
+    return (p->codeItem == codigo ? 1 : 0);
 }
 
 void liberar(Item **p) {
@@ -270,7 +268,7 @@ void liberar(Item **p) {
     }
 }
 
-void eliminar(TItem listaT, char codigo[]) {
+void eliminar(TItem listaT, int codigo) {
     if (listaT != NULL) {
         TItem auxborrar;
         TItem anterior = NULL;
@@ -292,9 +290,134 @@ void eliminar(TItem listaT, char codigo[]) {
     }
 }
 
+void borrar(int codigo) {
+    //TItem lista;
+    if (buscar(codigo)) {
+        if (a)
+            a->sgte = p->sgte;
+        else
+            i = p->sgte;
+        delete (p);
+        cout << "\n\nCodigo eliminado";
+    } else
+        cout << "\n\nCodigo no se encuentra";
+    getch();
+}
+
+/*
+ *
+ * Revisar unico
+void eliminar()
+{
+    Item item;
+    ofstream aux;
+    ifstream lectura;
+    int i= 0;
+    bool encontrado = false;
+    int auxCodigo = 0;
+    aux.open("Items.txt",ios::out);
+    lectura.open("Items.txt",ios::in);
+
+    if(aux.is_open() && lectura.is_open()){
+
+        cout<<"Ingresa el codigo: ";
+        cin>>auxCodigo;
+        lectura >> item.codeItem;
+        while(!lectura.eof())
+        {
+            lectura >> item.nameItem >> item.priceItem >> item.qualityItem;
+            if(auxCodigo == item.codeItem){
+                encontrado = true;
+                cout << "Registro Eliminado!" << endl;
+            }else{
+                aux << item.codeItem << " " << item.nameItem << " " << item.priceItem << " "
+                    << item.qualityItem << endl;
+            }
+            lectura>>item.codeItem;
+        }
+        if(encontrado==false){
+            cout<<"No se encontro ningun registro con clave "<<auxCodigo<<endl;
+        }
+        aux.close();
+        lectura.close();
+        //remove("inventario.txt");
+        //rename("auxiliar2.txt","inventario.txt");
+    }
+    else{
+        cout<<"No se pudo abrir el Archivo o aun no ha sido Creado"<<endl;
+
+    }
+    system("pause");
+}
+*/
+
+/*-----------------------Facturacion--------------------------*/
+
+void agregarFactura(){
+
+}
+
+void facturarse(){
+
+}
+
+void menufactura()
+{
+    SetConsoleTitle("F A C T U R A C I O N");
+    system("cls");
+    char op;
+    do
+    {
+        gotoxy(40,9);
+        cout << "F a c t u r a c i o n" << endl;
+        gotoxy(27,11);
+        cout << "[1] Agregar Venta" << endl;
+        gotoxy(27,12);
+        cout << "[2] Imprimir" << endl;
+        gotoxy(27,13);
+        cout <<"[0] Retornar"<<endl;
+
+        gotoxy(25,16);
+        cout << "Ingrese opcion: "; cin >> op;
+
+        switch(op)
+        {
+            case '1':
+            {
+                system("cls");
+                agregarFactura();
+                system("cls");
+                break;
+            }
+            case '2':
+            {
+                system("cls");
+                facturarse();
+                system("cls");
+                break;
+            }
+            case '0':
+            {
+                system("cls");
+                break;
+            }
+            default:
+            {
+                system("cls");
+                cout << "Error, opcion desconocida" << endl;
+                Sleep(500);
+                system("cls");
+                break;
+            }
+        }
+    }while(op!='0');
+
+}
+
 /*--------------------Cliente-------------------------------*/
 
 void menuCustomers() {
+    system("cls");
     int dato, opcion, contador = 0;
     string nombre, ap, codigo, dni;
     do {
@@ -306,8 +429,8 @@ void menuCustomers() {
         //cout << "\t5. Recorrer en PreOrden" << endl;
         //cout << "\t6. Recorrer en InOrden" << endl;
         //cout << "\t7. Recorrer en PostOrden" << endl;
-        cout << "\t8. Eliminar un Cliente" << endl;
-        cout << "\t9. Salir" << endl;
+        cout << "\t4. Eliminar un Cliente" << endl;
+        cout << "\t0. Retornar" << endl;
         cout << "\t##################################\n" << endl;
         cout << "\nIngrese Opcion: ";
         cin >> opcion;
@@ -359,7 +482,7 @@ void menuCustomers() {
                 system("pause");
                 break;
 
-            case 4:
+            case 8:
                 cout << "\n...:::|Ingrese el DNI del Cliente que desea buscar|:::... ";
                 cin >> dato;
                 if (busquedaiterativa(arbol, dato) == 1) {
@@ -401,7 +524,7 @@ void menuCustomers() {
                 break;
 
 
-            case 8:
+            case 4:
                 cout << "\n...:::|Ingrese el DNI del Cliente que desea eliminar del registro|:::...\n\n";
                 cin >> dato;
                 eliminar(arbol, dato);
@@ -411,7 +534,7 @@ void menuCustomers() {
         }
         system("cls");
 
-    } while (opcion != 9);
+    } while (opcion != 0);
 }
 
 Nodo *crearNodo(int n, string nombre, string ap, string dni, Nodo *Daddy) {
@@ -585,6 +708,7 @@ void eliminarNodo(Nodo *nodoEliminar) {
 
 
 void login(string username, string password) {
+    SetConsoleTitle("LOGIN");
     bool entry = false;
     int attempts = 0;
     do {
@@ -617,7 +741,7 @@ void login(string username, string password) {
             caracter = getch();
         }
 
-        if (username == "admin" && password == "admin") {
+        if (username == USER && password == PASS) {
             printf("\t\t\nVALICACI+N Y CLAVE CONFORME\n");
             entry = true;
             getchar();
@@ -644,6 +768,36 @@ void login(string username, string password) {
 }
 
 //--------------------utilitarios---------------------
+
+string Fecha()
+{
+    time_t t;
+    struct tm *tm;
+    char fecha[100];
+    t=time(NULL);
+    tm=localtime(&t);
+    strftime(fecha, 100, "%d/%m/%y", tm);
+    return  fecha;
+}
+
+string Hora()
+{
+    time_t t;
+    struct tm *tm;
+    char hora[100];
+
+    t=time(NULL);
+    tm=localtime(&t);
+    strftime(hora, 100, "%I:%M:%S", tm);
+    return  hora;
+}
+
+void gotoxy(int x,int y){
+    coord.X=x;
+    coord.Y=y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+}
+
 int ramdonCode() {
     int valor = 0;
     valor = rand() % (99999 - 11111) + 11111;
@@ -680,46 +834,9 @@ void messageError(int n) {
     }
 }
 
-void optionItems() {
-    int opcion;
-    std::ostringstream o;
-    string l = "201";  //201-xxxxx->limpieza
-    string a = "301";  //301-xxxxx->alimentos
-    string g = "401";  //401-xxxxx->licores & gaseosas
-    string d = "501";  //501-xxxxx->dulces
-
-    cout << "\nG E N E R A N D O | C O D I G O";
-    cout << "";
-    cout << "\n\t1 - L I M P I E Z A";
-    cout << "\n\t2 - A L I M E N T O S";
-    cout << "\n\t3 - L I C O R E S  &  G A S E O S A S";
-    cout << "\n\t4 - D U L C E S";
-    cout << "\nSeleccione opcion [~]: ";
-    cin >> opcion;
-
-    switch (opcion) {
-        case 1:
-            //printf("201%d", ramdonCode());
-            o << l << ramdonCode();
-            std::cout << o.str();
-            break;
-        case 2:
-            printf("301%d", ramdonCode());
-            break;
-        case 3:
-            printf("401%d", ramdonCode());
-            break;
-        case 4:
-            printf("501%d", ramdonCode());
-            break;
-        default:
-            cout << "\n\nOpcion no valida !!!";
-            getch();
-    }
-
-}
-
 void menuItems() {
+    SetConsoleTitle("MENU PRODUCTOS");
+    system("cls");
     int opc;
     TItem listarItem = NULL;
     do {
@@ -729,11 +846,11 @@ void menuItems() {
         cout << "# Menu de Productos #";
         cout << "#########   Fecha y Hora: ", dateTime();
         cout << "\n\t1 - Insertar datos";
-        cout << "\n\t2 - Mostrar todos los datos de Memoria";
+        cout << "\n\t2 - Mostrar datos recien ingresados";
         cout << "\n\t3 - Buscar un Producto";
         cout << "\n\t4 - Borrar un Producto";
         cout << "\n\t5 - Mostrar todos los datos del archivo";
-        cout << "\n\t0 - Finalizar\n";
+        cout << "\n\t0 - Retornar\n";
         cout << "\t#########";
         cout << "#####################";
         cout << "#########\n";
@@ -742,10 +859,10 @@ void menuItems() {
 
         switch (opc) {
 
-            case 0:
-                cout << "\nFinaliza el programa";
-                getch();
-                exit(0);
+            //case 0:
+            //    cout << "\nFinaliza el programa";
+            //    getch();
+            //    exit(0);
             case 1:
                 cout << "\nIngrese la cantidad de productos [~n]: ";
                 int cant;
@@ -785,50 +902,63 @@ void menuItems() {
                             cout << "\n\nOpcion no valida !!!";
                             getch();
                     }
-                    //convert string to char
-                    strcpy(codigo, o.str().c_str());
+                    int codigo = std::stoi(o.str());
                     cout << "Codigo generado : " << codigo;
+                    fflush(stdin);
                     cout << "\nIngresar el nombre del articulo " << i << "): ";
                     cin >> nombre;
+                    fflush(stdin);
                     cout << "Ingresar el" << " precio del articulo [S/.] " << i << "): ";
                     cin >> precio;
+                    fflush(stdin);
                     cout << "Ingresar la cantidad del articulo " << i << "): ";
                     cin >> cantArticulo;
+                    fflush(stdin);
                     insertarArticulo(listarItem, codigo, nombre, precio, cantArticulo);
                 }
                 cout << endl << "==================" << endl;
                 cout << "Se ingreso correctamente los pedidos" << endl;
                 cout << "==================" << endl;
+                system("pause");
                 break;
             case 2:
                 cout << "Mostrando todos los productos que recien se ingresaron ...\n\n";
                 imprimirMemory(listarItem);
                 liberar(&listarItem);
+                system("pause");
                 break;
             case 3:
                 cout << "\nIngrese codigo del Producto : ";
                 cin >> codigo;
-                buscar(listarItem, codigo);
+                //buscar(listarItem, codigo);
+                buscar(codigo);
                 liberar(&listarItem);
                 break;
             case 4:
                 cout << "\nIngrese el codigo para eliminar el Producto : ";
                 cin >> codigo;
-                eliminar(listarItem, codigo);
+                //eliminar(listarItem, codigo);
+                borrar(codigo);
+                cout << endl << "==================" << endl;
+                cout << "Se elimino correctamente el producto del codigo -> " << codigo << endl;
+                cout << "==================" << endl;
+                system("pause");
                 break;
             case 5:
                 cout << "Mostrando el historial de productos  guardados\n\n";
                 cargarArticulo();
                 liberar(&listarItem);
                 break;
-            default:
-                cout << "\n\nOpcion no valida !!!";
-                getch();
+                //default:
+                //    cout << "\n\nOpcion no valida !!!";
+                //    getch();
         }
-    } while (opc);
+        system("cls");
+    } while (opc != 0);
 }
 
 void menuMain() {
+    SetConsoleTitle("MENU PRINCIPAL");
     int opc;
     do {
 
@@ -860,7 +990,8 @@ void menuMain() {
                 menuCustomers();
                 break;
             case 3:
-                cout << "\nTransacciones en Mantenimiento :-( ";
+                //cout << "\nTransacciones en Mantenimiento :-( ";
+                menufactura();
                 break;
             case 4:
                 cout << "\nConfiguraciones en Mantenimiento :-(  ";
